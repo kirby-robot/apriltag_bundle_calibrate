@@ -32,9 +32,9 @@ class BundleImageLoader:
         for folder, _, files in os.walk(self.path):
             bundle = self.load_bundle(folder, files)
             self.images.append(bundle)
-            
-            
-            
+
+
+
 class ImageLoader:
     def __init__(self, path) -> None:
         self.path = path
@@ -45,7 +45,7 @@ class ImageLoader:
         image = cv2.imread(image_path)
         if image is not None:
             return image
-    
+
     def load(self,path=None):
         if path is not None:
             self.path = path
@@ -58,4 +58,3 @@ class ImageLoader:
         for img in images:
             if img is not None:
                 self.images.append(img)
-        

@@ -249,7 +249,7 @@ class PoseGraph:
 
 class WarmupPoseGraph(PoseGraph):
 
-    def add_tag(self, bundle_key, camera_key, tag_type, tag_id, tag_obj_pts, rvec, tvec):
+    def add_tag(self, bundle_key, camera_key, tag_type, tag_id, rvec, tvec):
         # add tag_pose node
         tag_pose_key = gtsam.symbol(tag_type, tag_id)
         if not self.initial_estimate.exists(tag_pose_key):
@@ -357,7 +357,7 @@ def main():
                     )
 
                     warmup_graph.add_tag(
-                        bundle_key, camera_key, tag_type, tag_id, obj_pts, rvec, tvec)
+                        bundle_key, camera_key, tag_type, tag_id, rvec, tvec)
                     bundle_graph.add_tag(
                         bundle_key, camera_key, tag_type, tag_id, corners, tag_size)
 

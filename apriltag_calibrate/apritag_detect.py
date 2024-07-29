@@ -16,19 +16,18 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 cv2.namedWindow("img", cv2.WINDOW_GUI_NORMAL)
 cv2.imshow("img", gray)
 
-detect_option = DetectorOptions(families='tag36h11',
-                                         border=1,
-                                         nthreads=1,
-                                         quad_decimate=4,
-                                         quad_blur=0.0,
-                                         refine_edges=True,
-                                         refine_decode=False,
-                                         refine_pose=False,
-                                         debug=True,
-                                         quad_contours=True)
+detect_option = DetectorOptions(families='tag16h5',
+                                border=1,
+                                nthreads=1,
+                                quad_decimate=4,
+                                quad_blur=0.0,
+                                refine_edges=True,
+                                refine_decode=False,
+                                refine_pose=False,
+                                debug=True,
+                                quad_contours=True)
 
 detector = Detector(detect_option)
-
 
 results = detector.detect(gray)
 
@@ -44,8 +43,8 @@ for result in results:
             c[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         i += 1
     print(f"tag id:{result.tag_id}")
-    
-    
+
+
 cv2.namedWindow("det", cv2.WINDOW_GUI_NORMAL)
 cv2.imshow("det", img_show)
 cv2.waitKey(0)

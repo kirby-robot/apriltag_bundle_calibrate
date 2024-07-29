@@ -129,7 +129,7 @@ def BundleCameraPnPFactor(
     return gtsam.CustomFactor(keys=keys, noiseModel=noise_model, errorFunction=partial(bundle_prior_camera_func, camera_T_body_pose))
 
 
-def tag_projection_error(corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
+def tag_projection_error(corners: List[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
     world_T_camera_pose_key = this.keys()[0]
     world_T_tag_pose_key = this.keys()[1]
     world_T_camera_pose = v.atPose3(world_T_camera_pose_key)
@@ -180,7 +180,7 @@ def tag_projection_error(corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_size: 
     return np.concatenate(errors)
 
 
-def tag_projection_error_i(index: int, corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
+def tag_projection_error_i(index: int, corners: List[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
     world_T_camera_pose_key = this.keys()[0]
     world_T_tag_pose_key = this.keys()[1]
     world_T_camera_pose = v.atPose3(world_T_camera_pose_key)
@@ -223,12 +223,12 @@ def tag_projection_error_i(index: int, corners: list[np.ndarray], K: gtsam.Cal3D
     return error
 
 
-def TagProjectionFactor(corners: list[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, world_T_tag_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
+def TagProjectionFactor(corners: List[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, world_T_tag_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
     keys = [world_T_camera_pose_key, world_T_tag_pose_key]
     return gtsam.CustomFactor(keys=keys, noiseModel=noise_model, error_func=partial(tag_projection_error, corners, k, tag_size))
 
 
-def TagProjectionFactors(corners: list[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, world_T_tag_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
+def TagProjectionFactors(corners: List[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, world_T_tag_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
     keys = [world_T_camera_pose_key, world_T_tag_pose_key]
     factors = gtsam.NonlinearFactorGraph()
     for i in range(4):
@@ -237,7 +237,7 @@ def TagProjectionFactors(corners: list[np.ndarray], k: gtsam.Cal3DS2, tag_size: 
     return factors
 
 
-def bundle_projection_error(corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
+def bundle_projection_error(corners: List[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
     world_T_camera_pose_key = this.keys()[0]
     bundle_T_tag_pose_key = this.keys()[1]
     world_T_bundle_pose_key = this.keys()[2]
@@ -300,14 +300,14 @@ def bundle_projection_error(corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_siz
     return np.concatenate(errors)
 
 
-def BundleTagFactor(corners: list[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, bundle_T_tag_pose_key: int, world_T_bundle_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
+def BundleTagFactor(corners: List[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, bundle_T_tag_pose_key: int, world_T_bundle_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
     keys = [world_T_camera_pose_key,
             bundle_T_tag_pose_key, world_T_bundle_pose_key]
 
     return gtsam.CustomFactor(keys=keys, noiseModel=noise_model, errorFunction=partial(bundle_projection_error, corners, k, tag_size))
 
 
-def bundle_projection_error_i(pt_index: int, corners: list[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
+def bundle_projection_error_i(pt_index: int, corners: List[np.ndarray], K: gtsam.Cal3DS2, tag_size: float, this: gtsam.CustomFactor, v: gtsam.Values, H: List[np.ndarray]):
     world_T_camera_pose_key = this.keys()[0]
     bundle_T_tag_pose_key = this.keys()[1]
     world_T_bundle_pose_key = this.keys()[2]
@@ -358,7 +358,7 @@ def bundle_projection_error_i(pt_index: int, corners: list[np.ndarray], K: gtsam
     return errors
 
 
-def BundleTagFactors(corners: list[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, bundle_T_tag_pose_key: int, world_T_bundle_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
+def BundleTagFactors(corners: List[np.ndarray], k: gtsam.Cal3DS2, tag_size: float, world_T_camera_pose_key: int, bundle_T_tag_pose_key: int, world_T_bundle_pose_key: int, noise_model: gtsam.noiseModel.Gaussian):
     keys = [world_T_camera_pose_key,
             bundle_T_tag_pose_key, world_T_bundle_pose_key]
     factors = gtsam.NonlinearFactorGraph()
