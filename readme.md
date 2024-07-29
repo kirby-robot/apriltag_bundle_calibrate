@@ -162,6 +162,14 @@ max error  0.2179664187125231
 avr error 0.10711236394595476
 ```
 
-## TODO List
-
-
+### Notice!!!
+  setup enviroment with:
+  ```shell
+  pip install -e .
+  ```
+  After install, you need to fix one bug for aprilfrid, go to file: site-packages/aprilgrid/tag_family.py:22,
+  change the code to:
+  ```
+  self.tag_bit_list = np.array([np.array([bool(int(i)) for i in np.binary_repr(
+            tag, self.marker_edge**2)]) for tag in APRILTAG_CODE_DICT[self.name]])
+  ```
