@@ -10,11 +10,11 @@ from concurrent.futures import ProcessPoolExecutor
 from bundle_calibrate import (
     WarmupPoseGraph,
     BundleCalibratePoseGraph,
-    BundleImageLoader,
     solve_pnp,
 )
 from functools import partial
 from tqdm import tqdm
+from utils import KeyType
 from utils.constant import CALIB_POS_TO_CAM_MAP, CALIB_BOARD_PARAMS
 
 class MultiCamImageLoader:
@@ -101,6 +101,7 @@ if __name__ == '__main__':
     pose_graph = WarmupPoseGraph()
     tag_detector = AprilgridDetector(['t16h5', 't25h7', 't36h11'])
     image_load = MultiCamImageLoader(args.input, cam_keys, use_mp=True)
+    camera_key_map = dict()
     image_load.load()
     for calib_pos, images in image_load.images.items():
         bundle_key = pose_graph.add_bundle()
@@ -120,6 +121,16 @@ if __name__ == '__main__':
                         CALIB_BOARD_PARAMS[tag_family]['corners'].reshape(-1, 4, 2)[tag.tag_id].tolist()
                     )
             rvec, tvec = solve_pnp(obj_points, img_points, cameras[cam_name])
-            camera_key = pose_graph.add_camera()
-            # Not complete
-            pose_graph.add_tag()
+            if cam_name not in camera_key_map:
+                camera_key = pose_graph.add_camera()
+                camera_key_map.setdefault(cam_name, camera_key)
+            else:
+                camera_key = camera_key_map[cam_name]
+            pose_graph.add_tag(
+                bundle_key, camera_key, KeyType.MASTER_TAG, 0, rvec, tvec
+            )
+
+        # solve warmup graph
+        pose_graph.fix_first_tag()
+        warmup_result = pose_graph.solve()
+        pose_graph.save_result("solve_result.yaml", extra_data=None)

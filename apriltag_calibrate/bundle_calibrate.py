@@ -248,7 +248,6 @@ class PoseGraph:
 
 
 class WarmupPoseGraph(PoseGraph):
-
     def add_tag(self, bundle_key, camera_key, tag_type, tag_id, rvec, tvec):
         # add tag_pose node
         tag_pose_key = gtsam.symbol(tag_type, tag_id)

@@ -14,5 +14,6 @@ setup(
         "apriltag",
         "opencv-python",
         "matplotlib",
+        "aprilgrid",
     ]
 )
