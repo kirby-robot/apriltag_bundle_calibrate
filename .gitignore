@@ -3,3 +3,6 @@ __pycache__/**
 build/**
 dist/**
 apriltag_calibrate.egg-info/**
+bundle0
+*.jpg
+*.pcd
