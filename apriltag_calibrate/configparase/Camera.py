@@ -1,5 +1,6 @@
 import numpy as np
 import yaml
+import cv2
 
 class Camera:
     def __init__(self, camera_param_file) -> None:
@@ -27,8 +28,9 @@ class Camera:
 
 class CameraCV:
     def __init__(self, camera_param_file) -> None:
+        print(f"camera_param_file .... {camera_param_file}")
         cv_file = cv2.FileStorage(camera_param_file, cv2.FILE_STORAGE_READ)
-        self.cameraMatrix = cv_file.getNode('P').mat()
+        self.cameraMatrix = cv_file.getNode('CameraMatrix').mat()
         self.cx = self.cameraMatrix[0, 2]
         self.cy = self.cameraMatrix[1, 2]
         self.fx = self.cameraMatrix[0, 0]

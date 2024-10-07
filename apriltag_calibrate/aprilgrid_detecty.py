@@ -23,6 +23,7 @@ if __name__ == '__main__':
     at_detector = aprilgrid.Detector(
         tag_family_name=args.family if args.family else os.path.basename(args.image).split('.')[0]
     )
+    print(f"gray.. {gray.shape}")
     tags = at_detector.detect(gray)
 
     print("%d apriltags have been detected."%len(tags))

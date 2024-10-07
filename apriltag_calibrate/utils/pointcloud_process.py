@@ -5,7 +5,7 @@ import open3d as o3d
 import open3d.core as o3c
 from shapely import LineString
 from pypcd4 import PointCloud
-from utils.constant import CALIB_BOARD_PARAMS
+from apriltag_calibrate.utils.constant import CALIB_BOARD_PARAMS
 
 def plane_detection(pcd, tolerance = 50):
     current_pcd = pcd
@@ -110,13 +110,14 @@ def line_fit(pts: np.array):
     end_pt = proj_length.max() * unit_dir + center
     return (start_pt, end_pt, proj_length.max() - proj_length.min(), unit_dir)
 
-def line_detection(pts: np.array, thresh: float=0.05, maxIteration: int=1000):
+def line_detection(pts: np.array, thresh: float=0.3, maxIteration: int=1000):
     line_detector = Line()
     lines = list()
     num_pts = pts.shape[0]
     while True:
         dir, point, inliers = line_detector.fit(pts, thresh, maxIteration)
-        if len(inliers) < 0.1 * num_pts:
+        _, _, length, _ = line_fit(pts.take(inliers, axis=0))
+        if len(inliers) < 0.05 * num_pts:
             break
         lines.append(line_fit(pts.take(inliers, axis=0)))
         pts = np.delete(pts, inliers, axis=0)
@@ -132,7 +133,7 @@ def proj_pt_to_plane(point, plane_point, plane_normal):
     return projection_point
 
 if __name__ == '__main__':
-    pcd_path = 'data/20240803-183320/166/'
+    pcd_path = '/home/anchen/solutions/dump/20240803-183320/166'
     pcd_files = os.listdir(pcd_path)    #[13:17]
     pcd_files = [os.path.join(pcd_path, file) for file in pcd_files]
     pc_fields = PointCloud.from_path(pcd_files[0]).fields
