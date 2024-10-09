@@ -63,8 +63,8 @@ def main(args):
     # init_guess = tr_154_2_166
     init_guess = rotate
 
-    pcd_154 = np_to_o3d(cloud_154)
-    pcd_166 = np_to_o3d(cloud_166)
+    pcd_154 = np_to_o3d(cloud_154).voxel_down_sample(voxel_size=0.02)
+    pcd_166 = np_to_o3d(cloud_166).voxel_down_sample(voxel_size=0.02)
 
     pcd_154.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
     pcd_166.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))

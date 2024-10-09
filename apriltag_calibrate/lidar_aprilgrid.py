@@ -44,7 +44,7 @@ def proj_pt_to_plane(point, plane_point, plane_normal):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, help="path to scene root")
-    parser.add_argument("--lidar", required=True, help="lidar")
+    # parser.add_argument("--lidar", required=True, help="lidar")
     return parser.parse_args()
 
 
@@ -236,11 +236,31 @@ def main(args):
 
     """
     # pcd_path = '/home/anchen/solutions/data/p1/20240928-2139_dump'
-    pcd_path = os.path.join(args.root, args.lidar)
-    pcd_files = os.listdir(pcd_path)  # [13:17]
-    pcd_files = [os.path.join(pcd_path, file) for file in pcd_files]
-    pcd_all = [PointCloud.from_path(file).numpy() for file in pcd_files]
-    pcd_all = np.vstack(pcd_all)
+    lidar_transform = np.array([[0.99868202,  0.04797583,  0.01823565, -0.95085806],
+                                [0.04873902, -0.99784159, -0.04400752,  9.37028002],
+                                [0.01608499,  0.04483831, -0.99886476,  7.28877078],
+                                [0.        ,  0.        ,  0.        ,  1.        ]])
+    lidar_transform = np.linalg.inv(lidar_transform)
+    lidar_folder_154 = 'lidar_192_168_1_154'
+    lidar_folder_166 = 'lidar_192_168_1_166'
+    pcd_all_154 = [
+        PointCloud.from_path(os.path.join(args.root, lidar_folder_154, file)).numpy()
+            for file in os.listdir(os.path.join(args.root, lidar_folder_154))[:200]
+    ]
+    pcd_all_166 = [
+        PointCloud.from_path(os.path.join(args.root, lidar_folder_166, file)).numpy()
+            for file in os.listdir(os.path.join(args.root, lidar_folder_166))[:200]
+    ]
+    pcd_all_166 = [
+        np.concatenate([pcd[:, :3] @ lidar_transform[:3, :3].T + lidar_transform[:3, 3:].T, pcd[:, 3:]], axis=1)
+        for pcd in pcd_all_166
+    ]
+
+    # pcd_path = os.path.join(args.root, args.lidar)
+    # pcd_files = os.listdir(pcd_path)  # [13:17]
+    # pcd_files = [os.path.join(pcd_path, file) for file in pcd_files]
+    # pcd_all = [PointCloud.from_path(file).numpy() for file in pcd_files]
+    pcd_all = np.vstack(pcd_all_154 + pcd_all_166)
     print(f'Load and merge all point clouds, shape: {pcd_all.shape}')
     vis_pointcloud(pcd_all)
     pcd_filtered = pcd_all[pcd_all[:, 3] > 140][:, :3]
@@ -308,7 +328,7 @@ def main(args):
     tr[:3, 3] = -rotation_2.T @ np.array([origin[0], origin[1], origin[2]])
     print(f"Tr... {tr}")
 
-    final_tr = align_tr(tr, box_points[:, :3])
+    final_tr = align_tr(tr, np.asarray(board_points.points))
     print(f"final_tr ... {final_tr}")
     # based on intensity find the black zone.
 
