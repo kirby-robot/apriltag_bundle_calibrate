@@ -6,8 +6,12 @@ import numpy as np
 import argparse
 
 import os
+
+import yaml
+
 from utils.constant import CALIB_BOARD_PARAMS, CALIB_POS_TO_CAM_MAP
-from configparase import Camera
+# from configparase import Camera
+from calib import Camera
 
 
 class AprilgridDetector():
@@ -27,7 +31,7 @@ class AprilgridDetector():
 
 
 def calibrate_camera(camera_image_dir, camera_calib_path, detector):
-    camera = Camera(camera_calib_path)
+    camera = Camera.load(camera_calib_path)
     img_points = []
     obj_points = []
     detected_families = set()
@@ -49,7 +53,7 @@ def calibrate_camera(camera_image_dir, camera_calib_path, detector):
         return False, None
 
     ret, rvec, tvec = cv2.solvePnP(
-        np.array(obj_points), np.array(img_points), camera.cameraMatrix, camera.distCoeffs)
+        np.array(obj_points), np.array(img_points), camera.M, camera.D)
     if ret is False:
         return False, None
 
@@ -90,6 +94,10 @@ def main(args):
 
     for lidar in args.lidars:
         pass
+
+    calib_file = os.path.join(args.root, "sensor_to_board.yaml")
+    with open(calib_file, "w") as f:
+        yaml.dump(sensor_topos, f, yaml.SafeDumper)
 
 
 if __name__ == '__main__':

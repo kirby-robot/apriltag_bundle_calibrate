@@ -272,7 +272,7 @@ def main(args):
     print(f"get center ... {picked.get_center()}")
     box_center = np.array(picked.get_center())
     dist = np.linalg.norm(pcd_all[:, :3] - box_center, axis=1)
-    mask = dist < 1.0
+    mask = dist < 0.8
     box_points = pcd_all[mask]
     board_points = vis_pointcloud(box_points, editing=True)
 
