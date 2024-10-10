@@ -48,7 +48,7 @@ def calibrate_camera(camera_image_dir, camera_calib_path, detector):
                     obj_points.extend(CALIB_BOARD_PARAMS[tag_family]['corners'].reshape(-1, 4, 3)[tag.tag_id].tolist())
                     img_points.extend(tag.corners[:, 0, :].tolist())
                     detected_families.add(tag_family)
-
+                    print(f"find tag family... {camera_image_dir} {tag_family}")
     if len(detected_families) < 1:
         return False, None
 
@@ -97,7 +97,7 @@ def main(args):
 
     calib_file = os.path.join(args.root, "sensor_to_board.yaml")
     with open(calib_file, "w") as f:
-        yaml.dump(sensor_topos, f, yaml.SafeDumper)
+        yaml.dump(sensor_topos, f)
 
 
 if __name__ == '__main__':
